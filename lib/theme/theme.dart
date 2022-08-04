@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const Color bluishClr = Color(0xFF456347);
+const Color bluishClr = Color(0xFF4e5ae8);
 const Color yellowClr = Color(0xFFFFB746);
 const Color pinkClr = Color(0xFFff4667);
 const Color white = Colors.white;
@@ -10,17 +10,20 @@ const Color darkHeaderClr = Color(0xFF424242);
 
 class Themes {
   static final light = ThemeData(
-    primarySwatch: Colors.red,
-    // primaryColor: Colors.red,
-    brightness: Brightness.light,
+    // primarySwatch: primaryColur,
+    // // primaryColor: Colors.red, //it is not woking with light theme
+    colorScheme: ColorScheme.fromSwatch().copyWith(
+      primary: primaryClr, //its ok with appbar btn directly
+      secondary: pinkClr, //floating action btn directly
+      brightness: Brightness.light,
+    ),
   );
-  // primaryswatch is not working in dark mode
+  // primaryswatch is not working with appbar in dark mode
   static final dark = ThemeData.dark().copyWith(
     // primaryColor: Colors.pink, //it is not working
-
     colorScheme: ColorScheme.fromSwatch().copyWith(
-      primary: Colors.blue,
-      secondary: Colors.red,
+      primary: darkGreyClr, //its ok with appbar btn directly
+      secondary: yellowClr, //floating action btn directly
     ),
   );
 }
