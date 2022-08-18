@@ -1,13 +1,16 @@
+import 'package:addtask/ui/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 class NotifyHelper {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin(); //
 
   initializeNotification() async {
-    //tz.initializeTimeZones();
+    tz.initializeTimeZones();
 
 //for Ios Initialization
     final IOSInitializationSettings initializationSettingsIOS =
@@ -28,8 +31,10 @@ class NotifyHelper {
     );
 
     //
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: selectNotification);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onSelectNotification: selectNotification,
+    );
   }
 
   void requestIOSPermissions() {
@@ -50,7 +55,7 @@ class NotifyHelper {
     Get.dialog(Text("Welcome to flutter notification"));
   }
 
-  //
+  //When someone click on notification
   Future selectNotification(String? payload) async {
     if (payload != null) {
       print('notification payload: $payload');
@@ -62,6 +67,7 @@ class NotifyHelper {
         ));
   }
 
+//immediate notification
   displayNotification({required String title, required String body}) async {
     print("doing test");
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
@@ -72,9 +78,11 @@ class NotifyHelper {
       priority: Priority.high,
     );
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    //
     var platformChannelSpecifics = new NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        iOS: iOSPlatformChannelSpecifics);
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
     //
     await flutterLocalNotificationsPlugin.show(
       0,
@@ -83,5 +91,21 @@ class NotifyHelper {
       platformChannelSpecifics,
       payload: 'It could be anything you pass',
     );
+  }
+
+  //scheduledNotification
+  scheduledNotification() async {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'scheduled title',
+        'theme changes 5 seconds ago',
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'your channel id', 'your channel name',
+                channelDescription: 'your channel description')),
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
   }
 }
